@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ajura AI Interface</title>
+    <style>
+        body { font-family: Arial, sans-serif; text-align: center; padding: 20px; }
+        input, button { margin: 10px; padding: 10px; }
+        #response { margin-top: 20px; padding: 10px; border: 1px solid #ddd; }
+    </style>
+</head>
+<body>
+
+    <h2>Ajura AI Interface</h2>
+
+    <input type="text" id="userInput" placeholder="Enter message">
+    <button onclick="sendMessage()">Send</button>
+
+    <h3>Response from Backend:</h3>
+    <div id="response">Waiting for response...</div>
+
+    <h3>Upload a File</h3>
+    <input type="file" id="fileInput">
+    <button onclick="uploadFile()">Upload</button>
+
+    <script>
+        const backendURL = "https://028220f1-d08d-43d7-b0bc-61c0929d115b-00-2qy4ckqmiipmb.pike.replit.dev"; // Replace with your actual backend URL
+
+        function sendMessage() {
+            const message = document.getElementById("userInput").value;
+            fetch(`${backendURL}/send-message`, {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ message: message })
+            })
+            .then(response => response.json())
+            .then(data => {
+                document.getElementById("response").innerText = "Response: " + data.reply;
+            })
+            .catch(error => console.error("Error:", error));
+        }
+
+        function uploadFile() {
+            const fileInput = document.getElementById("fileInput").files[0];
+            if (!fileInput) return alert("Please select a file!");
+
+            const formData = new FormData();
+            formData.append("file", fileInput);
+
+            fetch(`${backendURL}/upload`, {
+                method: "POST",
+                body: formData
+            })
+            .then(response => response.json())
+            .then(data => {
+                document.getElementById("response").innerText = "File Upload Status: " + data.message;
+            })
+            .catch(error => console.error("Upload Error:", error));
+        }
+    </script>
+
+</body>
+</html>
