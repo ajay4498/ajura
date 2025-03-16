@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ajura AI Interface</title>
+    <style>
+        body { font-family: Arial, sans-serif; text-align: center; padding: 20px; }
+        input, button { margin: 10px; padding: 10px; }
+        #response { margin-top: 20px; padding: 10px; border: 1px solid #ddd; }
+    </style>
+</head>
+<body>
+
+    <h2>Ajura AI Interface</h2>
+
+    <label>Backend URL:</label>
+    <input type="text" id="backendUrl" placeholder="Enter backend URL" value="https://your-backend-url.repl.co">
+    <button onclick="saveBackendUrl()">Save</button>
+
+    <br><br>
+    <input type="text" id="userInput" placeholder="Enter message">
+    <button onclick="sendMessage()">Send</button>
+
+    <h3>Response from Backend:</h3>
+    <div id="response">Waiting for response...</div>
+
+    <script>
+        // Function to store backend URL in localStorage
+        function saveBackendUrl() {
+            const url = document.getElementById("backendUrl").value;
+            localStorage.setItem("backendURL", url);
+            alert("Backend URL Saved!");
+        }
+
+        // Load backend URL from storage (or default)
+        const backendURL = localStorage.getItem("backendURL") || "https://your-backend-url.repl.co";
+
+        async function sendMessage() {
+            let message = document.getElementById("userInput").value;
+
+            let response = await fetch(`${backendURL}/api/data`, {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ message: message })
+            });
+
+            let result = await response.json();
+            document.getElementById("response").innerText = "Server Response: " + result.response;
+        }
+    </script>
+
+</body>
+</html>
